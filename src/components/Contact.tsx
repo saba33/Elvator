@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, Send, CheckCircle } from 'lucide-react';
+import { Mail, Phone, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Contact: React.FC = () => {
@@ -10,23 +10,43 @@ const Contact: React.FC = () => {
     phone: '',
     message: '',
   });
-  const [status, setStatus] = useState<'idle' | 'success'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStatus('loading');
 
-    const mailtoLink = `mailto:info@elvator.ge?subject=Contact from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
-    )}`;
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
-    window.location.href = mailtoLink;
+      if (!response.ok) {
+        throw new Error('Failed to send email');
+      }
 
-    setStatus('success');
-    setFormData({ name: '', email: '', phone: '', message: '' });
+      setStatus('success');
+      setFormData({ name: '', email: '', phone: '', message: '' });
 
-    setTimeout(() => {
-      setStatus('idle');
-    }, 3000);
+      setTimeout(() => {
+        setStatus('idle');
+      }, 5000);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setStatus('error');
+
+      setTimeout(() => {
+        setStatus('idle');
+      }, 5000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -156,11 +176,19 @@ const Contact: React.FC = () => {
                 </div>
               )}
 
+              {status === 'error' && (
+                <div className="flex items-center space-x-2 text-red-600 bg-red-50 px-4 py-3 rounded-lg">
+                  <AlertCircle className="w-5 h-5" />
+                  <span className="font-semibold">{t('contact_error')}</span>
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full inline-flex items-center justify-center space-x-2 bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+                disabled={status === 'loading'}
+                className="w-full inline-flex items-center justify-center space-x-2 bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl"
               >
-                <span>{t('contact_submit')}</span>
+                <span>{status === 'loading' ? 'Sending...' : t('contact_submit')}</span>
                 <Send className="w-5 h-5" />
               </button>
             </form>

@@ -20,7 +20,9 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => scrollToSection('hero')}>
             <ArrowUp className="w-8 h-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">Elevator</span>
+            <span className="text-2xl font-bold text-gray-900 leading-none py-1">
+              {language === 'ka' ? 'ელვატორი' : 'Elevator'}
+            </span>
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
