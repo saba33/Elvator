@@ -45,13 +45,21 @@ public sealed class MatchingController : ControllerBase
             var status = result.Error.Contains("not found", StringComparison.OrdinalIgnoreCase)
                 ? StatusCodes.Status404NotFound
                 : StatusCodes.Status400BadRequest;
-            return StatusCode(status, ToProblemDetails(result, status));
+            return ProblemResponse(result, status);
         }
 
         return Ok(result.Value);
     }
 
-    private ProblemDetails ToProblemDetails<T>(Result<T> result, int statusCode)
+    private static ObjectResult ProblemResponse<T>(Result<T> result, int statusCode)
+    {
+        return new ObjectResult(ToProblemDetails(result, statusCode))
+        {
+            StatusCode = statusCode
+        };
+    }
+
+    private static ProblemDetails ToProblemDetails<T>(Result<T> result, int statusCode)
     {
         return new ProblemDetails
         {

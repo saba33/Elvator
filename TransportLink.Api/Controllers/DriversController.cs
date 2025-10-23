@@ -34,7 +34,7 @@ public sealed class DriversController : ControllerBase
         var result = await _sender.Send(new GetAvailableDriversQuery(), cancellationToken);
         if (result.IsFailure)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, ToProblemDetails(result, StatusCodes.Status500InternalServerError));
+            return ProblemResponse(result, StatusCodes.Status500InternalServerError);
         }
 
         return Ok(result.Value);
@@ -60,12 +60,9 @@ public sealed class DriversController : ControllerBase
         var command = new UpdateDriverStatusCommand(driverId, request.IsAvailable);
         var result = await _sender.Send(command, cancellationToken);
 
-        if (result.IsFailure)
-        {
-            return StatusCode(StatusCodes.Status404NotFound, ToProblemDetails(result, StatusCodes.Status404NotFound));
-        }
-
-        return Ok(result.Value);
+        return result.IsFailure
+            ? ProblemResponse(result, StatusCodes.Status404NotFound)
+            : Ok(result.Value);
     }
 
     [HttpPatch("self/status")]
@@ -99,10 +96,18 @@ public sealed class DriversController : ControllerBase
             var status = result.Error?.Contains("not found", StringComparison.OrdinalIgnoreCase) == true
                 ? StatusCodes.Status404NotFound
                 : StatusCodes.Status400BadRequest;
-            return StatusCode(status, ToProblemDetails(result, status));
+            return ProblemResponse(result, status);
         }
 
         return Ok(result.Value);
+    }
+
+    private static ObjectResult ProblemResponse<T>(Result<T> result, int statusCode)
+    {
+        return new ObjectResult(ToProblemDetails(result, statusCode))
+        {
+            StatusCode = statusCode
+        };
     }
 
     private static ProblemDetails ToProblemDetails<T>(Result<T> result, int statusCode)

@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using TransportLink.Api.Options;
@@ -77,6 +78,10 @@ builder.Services.AddAuthorization(options =>
                    context.User.HasClaim(claim => claim.Type == CustomClaimTypes.CompanyId);
         });
     });
+
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
 });
 
 var redisConnection = builder.Configuration.GetConnectionString("Redis");
