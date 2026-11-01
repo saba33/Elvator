@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <ArrowUp className="w-8 h-8 text-blue-500" />
-              <span className="text-2xl font-bold">Elevator</span>
+              <span className="text-2xl font-bold">Gtekton</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
               Modern digital solutions that help businesses automate processes, improve management efficiency, and achieve sustainable growth.
@@ -56,9 +56,9 @@ const Footer: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4">{t('contact_info_title')}</h3>
             <ul className="space-y-3">
               <li>
-                <a href="mailto:info@elvator.ge" className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors">
+                <a href="mailto:info@gtekton.ge" className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors">
                   <Mail className="w-4 h-4" />
-                  <span>info@elvator.ge</span>
+                  <span>info@gtekton.ge</span>
                 </a>
               </li>
               <li>

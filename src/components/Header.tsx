@@ -21,7 +21,7 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => scrollToSection('hero')}>
             <ArrowUp className="w-8 h-8 text-blue-600" />
             <span className="text-2xl font-bold text-gray-900 leading-none py-1">
-              {language === 'ka' ? 'ელვატორი' : 'Elevator'}
+              Gtekton
             </span>
           </div>
 
