@@ -81,8 +81,8 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Email</p>
-                    <a href="mailto:info@elvator.ge" className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
-                      info@elvator.ge
+                    <a href="mailto:info@gtekton.ge" className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                      info@gtekton.ge
                     </a>
                   </div>
                 </div>

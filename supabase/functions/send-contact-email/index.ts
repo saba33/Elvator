@@ -24,8 +24,8 @@ Deno.serve(async (req: Request) => {
     }
 
     const emailContent = {
-      from: "Elvator Contact Form <onboarding@resend.dev>",
-      to: ["info@elvator.ge"],
+      from: "Gtekton Contact Form <onboarding@resend.dev>",
+      to: ["info@gtekton.ge"],
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <h2>New Contact Form Submission</h2>
